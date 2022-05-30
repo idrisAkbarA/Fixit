@@ -1,4 +1,5 @@
 import 'package:fixit/models/bookingModel.dart';
+import 'package:fixit/services/auth.dart';
 import 'package:fixit/util/apiCall.dart';
 import 'package:fixit/util/endpoint.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +19,12 @@ class BookingPage extends StatefulWidget {
 
 class _BookingPageState extends State<BookingPage> {
   Future<BookingModel>? _partner;
+  BookingModel? _partner2;
   Future<BookingModel> getPartner() async {
     var result = await Api.get(Endpoint.previewBooking(widget.partnerId, widget.serviceId));
     print("[partner] ${result['data']['partner']}");
-    return BookingModel.fromJson(result['data']['partner']) ;
+    _partner2 = BookingModel.fromJson(result['data']['partner'][0]);
+    return BookingModel.fromJson(result['data']['partner'][0]) ;
   }
 
   @override
@@ -31,16 +34,30 @@ class _BookingPageState extends State<BookingPage> {
     _partner = getPartner();
   }
 
+  void bookService(partnerServiceId) async {
+    var body = {
+      "partner_service_id" : partnerServiceId.toString()
+    };
+    try {
+      var result = await Api.post(Endpoint.bookJasa(), body);
+      print("[booking]\n\n$result\n\n");
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          bookService(_partner2?.partnerServiceModel[0].id);
+        },
         label: const Text("Book Now"),
         icon: const Icon(Icons.bookmark_add),
       ),
-      appBar: AppBar(title: const Text("Penyedia Jasa")),
+      appBar: AppBar(title: const Text("Book Service")),
       body: FutureBuilder(
         future: _partner,
         builder: (

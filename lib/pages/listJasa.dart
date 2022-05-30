@@ -67,7 +67,9 @@ class _ListJasaState extends State<ListJasa> {
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
-                        onTap: () => {Nav.goTo(context, BookingPage(partnerId: snapshot.data[index]["id"], serviceId: snapshot.data[index]["partner_service"][0]["service"]['id'] ,))},
+                        onTap: () {
+                          print("\nPartner id ${snapshot.data[index]['partner']["id"]} | service id ${snapshot.data[index]['service']["id"]}");
+                          Nav.goTo(context, BookingPage(partnerId: snapshot.data[index]['partner']["id"], serviceId: snapshot.data[index]["service"]["id"] ,));},
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Card(
@@ -85,8 +87,8 @@ class _ListJasaState extends State<ListJasa> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text(snapshot.data[index]['name'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                      Text(snapshot.data[index]['address'], style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),),
+                                      Text(snapshot.data[index]['partner']['name'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                      Text(snapshot.data[index]['partner']['address'], style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),),
                                       Padding(
                                         padding: const EdgeInsets.only(top:8.0),
                                         child: RatingBar(

@@ -6,7 +6,7 @@ class BookingModel {
   String? description;
   String? phone;
   String? address;
-  PartnerServiceModel partnerServiceModel;
+  List<PartnerServiceModel> partnerServiceModel;
 
   BookingModel({this.id, this.name, this.description, this.phone, this.address, required this.partnerServiceModel});
 
@@ -17,7 +17,7 @@ class BookingModel {
       description: json['description'],
       phone: json['phone'],
       address: json['address'],
-      partnerServiceModel: json['partner_service']
+      partnerServiceModel: List<PartnerServiceModel>.from(json['partner_service'].map((x)=> PartnerServiceModel.fromJson(x)))
     );
   }
 }

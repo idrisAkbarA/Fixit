@@ -3,7 +3,7 @@ import 'package:fixit/models/serviceModel.dart';
 class PartnerServiceModel {
   int id;
   String price;
-  String partnerId;
+  int partnerId;
   ServiceModel service;
 
   PartnerServiceModel({required this.id, required this.price, required this.partnerId, required this.service});

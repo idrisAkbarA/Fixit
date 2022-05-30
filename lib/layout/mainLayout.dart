@@ -1,5 +1,6 @@
 import 'package:fixit/pages/history.dart';
 import 'package:fixit/pages/home.dart';
+import 'package:fixit/pages/partnerPage.dart';
 import 'package:fixit/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -16,7 +17,8 @@ class _MainLayoutState extends State<MainLayout> {
   List<Widget> _pages = <Widget>[
     HomeScreen(),
     History(),
-    UserProfile()
+    UserProfile(),
+    PartnerPage()
   ];
   int _selectedIndex = 0;
   void _onItemTapped(int index) {
@@ -34,18 +36,22 @@ class _MainLayoutState extends State<MainLayout> {
         onTap: _onItemTapped,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home,  color: Colors.blue),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.history),
+            icon: Icon(Icons.history,  color: Colors.blue),
             label: 'History',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person,  color: Colors.blue),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_repair_service, color: Colors.blue),
+            label: 'Mitra',
           ),
         ],
       ),

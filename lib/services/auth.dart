@@ -15,10 +15,14 @@ class Auth {
 
     try {
       var response = await Api.post(Endpoint.login, body);
+
+      var partner = response['data']['partner'];
       final storage = new FlutterSecureStorage();
       await storage.write(key: tokenKey, value: response['data']['token']);
       await storage.write(key: userDataKey, value: jsonEncode( response['data']['user']));
-
+      if(partner!=null){
+        await storage.write(key: partnerIdKey, value: response['data']['partner']['id']);
+      }
       print(response['data']['token']);
       print("[Auth] ${response['data']['user']}");
       return true;
@@ -38,6 +42,7 @@ class Auth {
   static Future<bool> logout() async{
     final storage = new FlutterSecureStorage();
     await storage.delete(key: tokenKey);
+    await storage.delete(key: partnerIdKey);
     print("[Auth]${await storage.read(key: tokenKey)}");
     return true;
   }
