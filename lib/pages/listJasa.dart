@@ -1,4 +1,5 @@
 import 'package:fixit/layout/baseScrollLayout.dart';
+import 'package:fixit/pages/bookingPage.dart';
 import 'package:fixit/pages/partnerProfile.dart';
 import 'package:fixit/util/apiCall.dart';
 import 'package:fixit/util/route.dart';
@@ -59,14 +60,14 @@ class _ListJasaState extends State<ListJasa> {
                   ));
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
-                return const Text('Error');
+                return  Text('Error ${snapshot.error}');
               } else if (snapshot.hasData) {
                 return ListView.builder(
                     padding: const EdgeInsets.all(8),
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
-                        onTap: () => {Nav.goTo(context, PartnerProfile(partnerId: snapshot.data[index]["id"],))},
+                        onTap: () => {Nav.goTo(context, BookingPage(partnerId: snapshot.data[index]["id"], serviceId: snapshot.data[index]["partner_service"][0]["service"]['id'] ,))},
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Card(

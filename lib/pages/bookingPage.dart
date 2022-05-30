@@ -1,4 +1,4 @@
-import 'package:fixit/models/partnerModel.dart';
+import 'package:fixit/models/bookingModel.dart';
 import 'package:fixit/util/apiCall.dart';
 import 'package:fixit/util/endpoint.dart';
 import 'package:flutter/material.dart';
@@ -6,22 +6,22 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fixit/models/partnerModel.dart';
 
 class BookingPage extends StatefulWidget {
   int partnerId;
-  BookingPage({required this.partnerId, Key? key}) : super(key: key);
+  int serviceId;
+  BookingPage({required this.partnerId, required this.serviceId, Key? key}) : super(key: key);
 
   @override
   State<BookingPage> createState() => _BookingPageState();
 }
 
 class _BookingPageState extends State<BookingPage> {
-  Future<PartnerModel>? _partner;
-  Future<PartnerModel> getPartner() async {
-    var result = await Api.get(Endpoint.getPartner(widget.partnerId));
+  Future<BookingModel>? _partner;
+  Future<BookingModel> getPartner() async {
+    var result = await Api.get(Endpoint.previewBooking(widget.partnerId, widget.serviceId));
     print("[partner] ${result['data']['partner']}");
-    return PartnerModel.fromJson(result['data']['partner']) ;
+    return BookingModel.fromJson(result['data']['partner']) ;
   }
 
   @override
@@ -45,7 +45,7 @@ class _BookingPageState extends State<BookingPage> {
         future: _partner,
         builder: (
           BuildContext context,
-          AsyncSnapshot<PartnerModel> snapshot,
+          AsyncSnapshot<BookingModel> snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(

@@ -3,6 +3,7 @@ import 'package:fixit/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:fixit/util/route.dart';
 
+import '../layout/mainLayout.dart';
 import '../services/auth.dart';
 
 class SignUp extends StatefulWidget {
@@ -105,8 +106,12 @@ class _SignUpState extends State<SignUp> {
                 width: MediaQuery.of(context).size.width,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Auth.register(nameCont.text, emailCont.text, passwordCont.text, passwordConfirmCont.text);
+                  onPressed: () async{
+                    var isSuccess = await Auth.register(nameCont.text, emailCont.text, passwordCont.text, passwordConfirmCont.text);
+                    if(isSuccess) {
+                      await Auth.login(emailCont.text, passwordCont.text);
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const MainLayout() ));
+                    }
                   },
                   child: const Text("Register"),
                 )),
