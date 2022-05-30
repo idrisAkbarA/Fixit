@@ -2,8 +2,11 @@
 import 'package:flutter/material.dart';
 import './components/splashScreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+  ProviderScope(child: MyApp())
+  );
 
 class MyApp extends StatelessWidget {
   @override
