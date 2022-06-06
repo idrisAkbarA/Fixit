@@ -41,6 +41,12 @@ dependencies:
   getwidget: ^2.0.5
   flutter_riverpod: ^2.0.0-dev.9
   flutter_rating_bar: ^4.0.1
+  dropdown_button2: ^1.5.2
+  laravel_flutter_pusher: ^0.0.4
+  workmanager: ^0.5.0
+  flutter_local_notifications: ^9.5.3+1
+  firebase_core: ^1.17.1
+  firebase_messaging: ^11.4.1
 
 dev_dependencies:
   flutter_test:

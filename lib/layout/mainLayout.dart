@@ -1,4 +1,4 @@
-import 'package:fixit/pages/history.dart';
+import 'package:fixit/pages/historyPage.dart';
 import 'package:fixit/pages/home.dart';
 import 'package:fixit/pages/partnerPage.dart';
 import 'package:fixit/pages/profile.dart';

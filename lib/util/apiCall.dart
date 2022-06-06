@@ -7,7 +7,12 @@ class Api {
   static Map<String,String> headers = {
     "Accept": "application/json"
   };
-  static post(String url, Map body) async{
+  static post(String url, Map body, {bool useToken = false}) async{
+    if(useToken){
+      final storage = new FlutterSecureStorage();
+      var token = await storage.read(key: tokenKey);
+      headers["Authorization"] = "Bearer $token";
+    }
     var response = await http.post(Uri.parse(url),headers: headers, body: body);
     if(response.statusCode!=200){
       throw Exception("request error: ${response.statusCode} error | ${response.body}");

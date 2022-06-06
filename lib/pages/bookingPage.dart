@@ -1,7 +1,10 @@
 import 'package:fixit/models/bookingModel.dart';
+import 'package:fixit/models/transactionModel.dart';
+import 'package:fixit/pages/transactionPage.dart';
 import 'package:fixit/services/auth.dart';
 import 'package:fixit/util/apiCall.dart';
 import 'package:fixit/util/endpoint.dart';
+import 'package:fixit/util/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -34,13 +37,19 @@ class _BookingPageState extends State<BookingPage> {
     _partner = getPartner();
   }
 
-  void bookService(partnerServiceId) async {
+  void bookService(partnerServiceId, context) async {
     var body = {
       "partner_service_id" : partnerServiceId.toString()
     };
+    print("[booking] partnerserviceId $partnerServiceId | partnerserviceId tostring ${partnerServiceId.toString()}");
     try {
       var result = await Api.post(Endpoint.bookJasa(), body);
       print("[booking]\n\n$result\n\n");
+      TransactionModel transaction = TransactionModel.fromJson(result["data"]["transaction"]);
+      print("[booking] ${transaction.id}");
+      if(transaction.id !=null){
+        Nav.goTo(context, TransactionPage(transactionId: transaction.id??0));
+      }
     } catch (e) {
       print(e);
     }
@@ -52,7 +61,7 @@ class _BookingPageState extends State<BookingPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          bookService(_partner2?.partnerServiceModel[0].id);
+          bookService(_partner2?.partnerServiceModel[0].id, context);
         },
         label: const Text("Book Now"),
         icon: const Icon(Icons.bookmark_add),
@@ -158,6 +167,26 @@ class _BookingPageState extends State<BookingPage> {
                               padding: const EdgeInsets.only(top: 20),
                               child:
                                   Text("${snapshot.data?.description}"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child:
+                                  Text("Jasa yang akan dipesan:"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child:
+                                  Text("Reparasi: ${snapshot.data?.partnerServiceModel[0].service?.name}", style: TextStyle(fontWeight: FontWeight.bold),),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child:
+                                  Text("Harga:"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child:
+                                  Text("Rp.${snapshot.data?.partnerServiceModel[0].price}", style: TextStyle(fontWeight: FontWeight.bold),),
                             )
                           ],
                         ),

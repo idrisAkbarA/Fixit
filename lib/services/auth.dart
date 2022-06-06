@@ -11,17 +11,26 @@ import 'package:fixit/providers/userProvider.dart';
 
 class Auth {
   static Future<bool> login(String email, String password) async {
-    var body = {'email': email, 'password': password};
-
+    final storage = new FlutterSecureStorage();
+    var deviceToken = await storage.read(key: deviceTokenKey);
+    var body = {
+      'email': email,
+      'password': password,
+      'device_token': deviceToken
+    };
+    print("[login] token: ${body['device_token']}");
     try {
       var response = await Api.post(Endpoint.login, body);
 
+      print("[auth] ${response['data']['partner']}");
       var partner = response['data']['partner'];
-      final storage = new FlutterSecureStorage();
       await storage.write(key: tokenKey, value: response['data']['token']);
-      await storage.write(key: userDataKey, value: jsonEncode( response['data']['user']));
-      if(partner!=null){
-        await storage.write(key: partnerIdKey, value: response['data']['partner']['id']);
+      await storage.write(
+          key: userDataKey, value: jsonEncode(response['data']['user']));
+      if (partner != null) {
+        await storage.write(
+            key: partnerIdKey,
+            value: response['data']['partner']['id'].toString());
       }
       print(response['data']['token']);
       print("[Auth] ${response['data']['user']}");
@@ -31,44 +40,75 @@ class Auth {
       return false;
     }
   }
-  static Future<bool> isLoggedIn() async{
+
+  static Future<bool> isLoggedIn() async {
     final storage = new FlutterSecureStorage();
     var token = await storage.read(key: tokenKey);
-    if(token == null){
+    if (token == null) {
       return false;
     }
     return true;
   }
-  static Future<bool> logout() async{
+
+  static Future<bool> logout() async {
     final storage = new FlutterSecureStorage();
     await storage.delete(key: tokenKey);
     await storage.delete(key: partnerIdKey);
     print("[Auth]${await storage.read(key: tokenKey)}");
     return true;
   }
-  static Future<UserModel> getUserData() async{
+
+  static Future<UserModel> getUserData() async {
     final storage = new FlutterSecureStorage();
     var data = await storage.read(key: userDataKey);
-    if(data!=null){
+    if (data != null) {
       return UserModel.fromJson(jsonDecode(data));
     }
     return UserModel();
   }
-  static Future<bool> register(name, email, password, confirmPassword) async{
+
+  static Future<bool> register(name, email, password, confirmPassword) async {
+    final storage = new FlutterSecureStorage();
+    var deviceToken = await storage.read(key: deviceTokenKey);
     var body = {
       'name': name,
       'email': email,
       'password': password,
-      'password_confirmation': confirmPassword
+      'password_confirmation': confirmPassword,
+      'device_token': deviceToken
     };
     try {
       var response = await Api.post(Endpoint.register, body);
-      final storage = new FlutterSecureStorage();
       await storage.write(key: tokenKey, value: response['data']['token']);
       // await storage.write(key: userDataKey, value: jsonEncode( response['data']['user']));
 
       print("[Register] ${response['data']['token']}");
       return true;
+    } catch (e) {
+      print("error ${e.toString()}");
+      throw Exception(e);
+    }
+  }
+
+  static Future<int> registerAsPartner(
+      namaToko, alamat, phone, deskripsi) async {
+    print("[register] I'm called");
+    var body = {
+      'name': namaToko,
+      'address': alamat,
+      'description': deskripsi,
+      'phone': phone
+    };
+    try {
+      var response =
+          await Api.post(Endpoint.registerAsPartner, body, useToken: true);
+      final storage = new FlutterSecureStorage();
+      await storage.write(
+          key: partnerIdKey, value: response['data']['partner_id'].toString());
+      // await storage.write(key: userDataKey, value: jsonEncode( response['data']['user']));
+
+      print("[Register] ${response['data']['partner_id']}");
+      return response['data']['partner_id'];
     } catch (e) {
       print("error ${e.toString()}");
       throw Exception(e);
