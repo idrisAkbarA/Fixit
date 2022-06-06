@@ -156,7 +156,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             Padding(
                               padding: const EdgeInsets.only(top: 20),
                               child:
-                                  Text("Status:\n ${setStatus(snapshot.data.isAccepted)}"),
+                                  Text("Status:\n${setStatus(snapshot.data.isAccepted)}"),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 20),

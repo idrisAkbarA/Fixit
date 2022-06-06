@@ -107,7 +107,7 @@ class HomeScreen extends ConsumerWidget {
         child: Row(
           children: [
             Text("Home Appliances Repair",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal)),
           ],
         ),
       ),

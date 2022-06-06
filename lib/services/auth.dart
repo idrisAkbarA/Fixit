@@ -51,6 +51,12 @@ class Auth {
   }
 
   static Future<bool> logout() async {
+    var body = {};
+    try {
+      await Api.post(Endpoint.logout, body, useToken: true);
+    } catch (e) {
+      print("$e");
+    }
     final storage = new FlutterSecureStorage();
     await storage.delete(key: tokenKey);
     await storage.delete(key: partnerIdKey);

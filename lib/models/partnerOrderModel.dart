@@ -1,3 +1,5 @@
+import 'package:fixit/models/serviceModel.dart';
+
 class PartnerOrderModel {
   int? id;
   DateTime? date;
@@ -18,6 +20,7 @@ class PartnerOrderModel {
   String? description;
   String? phone;
   String? address;
+  ServiceModel? service;
 
   PartnerOrderModel(
       {this.id,
@@ -38,7 +41,9 @@ class PartnerOrderModel {
       this.customerName,
       this.description,
       this.phone,
-      this.address});
+      this.address,
+      this.service
+      });
 
   factory PartnerOrderModel.fromJson(Map<String, dynamic>? json) {
     return PartnerOrderModel(
@@ -61,6 +66,7 @@ class PartnerOrderModel {
       description: json?["description"],
       phone: json?["phone"],
       address: json?["address"],
+      service: ServiceModel.fromJson(json?["partner_service"]["service"])
     );
   }
 }

@@ -1,9 +1,12 @@
 class Endpoint {
-  static const baseUrl = "http://192.168.1.20:8000";
+  static const baseUrl = "http://192.168.1.10:8000";
   static const login = "$baseUrl/api/auth/login";
   static const register = "$baseUrl/api/auth/register";
   static const registerAsPartner = "$baseUrl/api/partner/create";
   static String storePartnerServices = "$baseUrl/api/partner-service/store";
+  static String updateUser = "$baseUrl/api/user/update";
+  static String logout= "$baseUrl/api/auth/logout";
+
 
   static String getPartnerServices(idPartner){return "$baseUrl/api/service/get-services-by-partner/$idPartner";}
   static String getServices(idService) {return "$baseUrl/api/partner/get-partners-by-service/$idService";}

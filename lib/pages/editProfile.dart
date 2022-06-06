@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:fixit/layout/baseScrollLayout.dart';
 import 'package:fixit/models/userModel.dart';
-import 'package:fixit/pages/editProfile.dart';
 import 'package:fixit/pages/login.dart';
+import 'package:fixit/pages/profile.dart';
 import 'package:fixit/services/auth.dart';
+import 'package:fixit/util/apiCall.dart';
 import 'package:fixit/util/constants.dart';
+import 'package:fixit/util/endpoint.dart';
 import 'package:fixit/util/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -14,14 +16,14 @@ import 'package:getwidget/components/avatar/gf_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class UserProfile extends StatefulWidget {
-  const UserProfile({Key? key}) : super(key: key);
+class EditUserProfile extends StatefulWidget {
+  const EditUserProfile({Key? key}) : super(key: key);
 
   @override
-  State<UserProfile> createState() => _UserProfileState();
+  State<EditUserProfile> createState() => _EditUserProfileState();
 }
 
-class _UserProfileState extends State<UserProfile> {
+class _EditUserProfileState extends State<EditUserProfile> {
   logout(context) async {
     await Auth.logout();
     Navigator.pushAndRemoveUntil(
@@ -32,13 +34,47 @@ class _UserProfileState extends State<UserProfile> {
         (route) => false);
   }
 
+  update() async{
+    var body = {
+      "name": nameCont.text,
+      "address": addressCont.text,
+      "email": emailCont.text,
+      "phone": phoneCont.text
+    };
+    try {
+      var response = await Api.post(Endpoint.updateUser, body, useToken: true);
+      var storage = const FlutterSecureStorage();
+      await storage.write(key: userDataKey, value:jsonEncode(response['data']['user']));
+      print("[update] $response");
+      setState(() {
+        
+      });
+         Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserProfile(),
+        ),
+        (route) => false);
+    } catch (e) {
+      print("$e");
+    }
+  }
+
+  TextEditingController emailCont = TextEditingController();
+  TextEditingController nameCont = TextEditingController();
+  TextEditingController addressCont = TextEditingController();
+  TextEditingController phoneCont = TextEditingController();
+
   late Future<UserModel> _user;
 
   Future<UserModel> getUser() async {
     var storage = const FlutterSecureStorage();
     var rawJsonData = await storage.read(key: userDataKey);
-
-    return UserModel.fromJson(jsonDecode(rawJsonData!));
+    var user = UserModel.fromJson(jsonDecode(rawJsonData!));
+    nameCont.text = user.name ?? "";
+    emailCont.text = user.email ?? "";
+    addressCont.text = user.address ?? "";
+    return user;
   }
 
   @override
@@ -67,9 +103,7 @@ class _UserProfileState extends State<UserProfile> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text("Profile"),
-                TextButton(onPressed: (){
-                  Nav.goTo(context, EditUserProfile());
-                }, child: Text("Perbarui data diri")),
+                // TextButton(onPressed: () {}, child: Text("Perbarui data diri")),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Container(
@@ -85,7 +119,7 @@ class _UserProfileState extends State<UserProfile> {
                             child: Padding(
                           padding: const EdgeInsets.only(left: 15.0),
                           child: Text(
-                            "${snapshot.data.name}",
+                            "${nameCont.text}",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 30),
                           ),
@@ -95,54 +129,51 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Alamat anda"),
-                          Text(
-                            "${snapshot.data.address}",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      )
-                    ],
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  child: TextField(
+                    controller: nameCont,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
+                      labelText: "Nama anda",
+                    ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Kontak"),
-                          Text(
-                            "${snapshot.data.phone}",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      )
-                    ],
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  child: TextField(
+                    controller: addressCont,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
+                      labelText: "Alamat anda",
+                    ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Email"),
-                          Text(
-                            "${snapshot.data.email}",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      )
-                    ],
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  child: TextField(
+                    controller: phoneCont,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
+                      labelText: "Kontak anda",
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  child: TextField(
+                    controller: emailCont,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
+                      labelText: "Email anda",
+                    ),
                   ),
                 ),
                 Padding(
@@ -151,10 +182,10 @@ class _UserProfileState extends State<UserProfile> {
                       height: 55,
                       width: MediaQuery.of(context).size.width,
                       child: ElevatedButton(
-                        onPressed: () {
-                          logout(context);
+                        onPressed: () async{
+                          update();
                         },
-                        child: const Text("Logout"),
+                        child: const Text("Simpan"),
                       )),
                 ),
               ],

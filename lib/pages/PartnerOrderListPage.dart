@@ -43,6 +43,12 @@ class _PartnerOrderListPageState extends State<PartnerOrderListPage> {
     return "Tanggal: ${date.day.toString().padLeft(2,'0')}-${date.month.toString().padLeft(2,'0')}-${date.year.toString()}\nPukul: ${date.hour.toString().padLeft(2,'0')}:${date.minute.toString().padLeft(2,'0')} ";
   }
 
+  void refreshData(){
+    setState(() {
+      _orderlist = _getOrderList();
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -93,7 +99,8 @@ class _PartnerOrderListPageState extends State<PartnerOrderListPage> {
                       return GestureDetector(
                         onTap: () {
                           // print("\nPartner id ${snapshot.data[index]['partner']["id"]} | service id ${snapshot.data[index]['service']["id"]}");
-                          Nav.goTo(context, OrderDetailPage(transactionId: snapshot.data[index].id));
+                          // Nav.goTo(context, OrderDetailPage(transactionId: snapshot.data[index].id));
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderDetailPage(transactionId: snapshot.data[index].id))).then((value) => refreshData());
                           },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -113,7 +120,7 @@ class _PartnerOrderListPageState extends State<PartnerOrderListPage> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text("Pesanan untuk reparasi:", style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),),
-                                      Text("${snapshot.data[index].serviceName}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                                      Text("${snapshot.data[index].service?.name}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                                       Padding(
                                         padding: const EdgeInsets.only(top:10.0),
                                         child: Text(formatDateTime(snapshot.data[index].date), style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),),

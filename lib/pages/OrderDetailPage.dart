@@ -210,81 +210,93 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               topRight: Radius.circular(20),
                               topLeft: Radius.circular(20)),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 50, left: 20, right: 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Reparasi: ${snapshot.data?.serviceModel?.name}",
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "${snapshot.data?.partner?.name}",
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.normal),
-                                      ),
-                                      Text(
-                                        "Biaya Rp.${snapshot.data?.partnerServiceModel?.price}",
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.normal),
-                                      ),
-                                    ],
-                                  ),
-                                  // RatingBar(
-                                  //     ignoreGestures: true,
-                                  //     updateOnDrag: false,
-                                  //     itemSize: 25,
-                                  //     initialRating: 0,
-                                  //     direction: Axis.horizontal,
-                                  //     allowHalfRating: true,
-                                  //     itemCount: 5,
-                                  //     ratingWidget: RatingWidget(
-                                  //         full: const Icon(Icons.star,
-                                  //             color: Colors.orange),
-                                  //         half: const Icon(
-                                  //           Icons.star_half,
-                                  //           color: Colors.orange,
-                                  //         ),
-                                  //         empty: const Icon(
-                                  //           Icons.star_outline,
-                                  //           color: Colors.orange,
-                                  //         )),
-                                  //     onRatingUpdate: (value) {
-                                  //       // setState(() {
-                                  //       //   _ratingValue = value;
-                                  //       // }
-                                  //       // );
-                                  //     }),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Text(
-                                    "Status:\n${setStatus(snapshot.data.isAccepted)}"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Text(
-                                    "${formatDateTime(snapshot.data.date)}"),
-                              )
-                            ],
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 50, left: 20, right: 20, bottom: 70),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Reparasi: ${snapshot.data?.serviceModel?.name}",
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "${snapshot.data?.partner?.name}",
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                        Text(
+                                          "Biaya Rp.${snapshot.data?.partnerServiceModel?.price}",
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                      ],
+                                    ),
+                                    // RatingBar(
+                                    //     ignoreGestures: true,
+                                    //     updateOnDrag: false,
+                                    //     itemSize: 25,
+                                    //     initialRating: 0,
+                                    //     direction: Axis.horizontal,
+                                    //     allowHalfRating: true,
+                                    //     itemCount: 5,
+                                    //     ratingWidget: RatingWidget(
+                                    //         full: const Icon(Icons.star,
+                                    //             color: Colors.orange),
+                                    //         half: const Icon(
+                                    //           Icons.star_half,
+                                    //           color: Colors.orange,
+                                    //         ),
+                                    //         empty: const Icon(
+                                    //           Icons.star_outline,
+                                    //           color: Colors.orange,
+                                    //         )),
+                                    //     onRatingUpdate: (value) {
+                                    //       // setState(() {
+                                    //       //   _ratingValue = value;
+                                    //       // }
+                                    //       // );
+                                    //     }),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: Text(
+                                      "Nama Pelanggan:\n${snapshot.data.user.name}"),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: Text(
+                                      "Kontak Pelanggan:\n${snapshot.data.user.phone}"),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: Text(
+                                      "Status:\n${setStatus(snapshot.data.isAccepted)}"),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: Text(
+                                      "${formatDateTime(snapshot.data.date)}"),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),

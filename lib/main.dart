@@ -106,8 +106,8 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
-      print("[Notification] ${notification?.body}");
-      print("[Notification] ${message.data}");
+      // print("[Notification] ${notification?.body}");
+      // print("[Notification] ${message.data}");
       if (notification != null && android != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
@@ -115,10 +115,14 @@ class _MyAppState extends State<MyApp> {
             notification.body,
             NotificationDetails(
                 android: AndroidNotificationDetails(channel.id, channel.name,
+
                     channelDescription: channel.description,
                     color: Colors.blue,
                     icon: '@mipmap/ic_launcher',
-                    playSound: true)));
+                    playSound: true)
+                    )
+                    
+                    );
       }
     });
 
@@ -126,6 +130,7 @@ class _MyAppState extends State<MyApp> {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
+        print("[on opened]I'm clicked");
         showDialog(context: context, builder: (_){
           return AlertDialog(
             title: Text("${notification.title}"),
