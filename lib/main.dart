@@ -135,6 +135,9 @@ class _MyAppState extends State<MyApp> {
             //  (Route<dynamic> route) => false,
           );
     }
+    setState(() {
+      print("try to set state");
+    });
   }
 
   @override
