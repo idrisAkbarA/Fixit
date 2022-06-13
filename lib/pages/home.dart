@@ -1,4 +1,6 @@
 import 'package:fixit/models/userModel.dart';
+import 'package:fixit/util/constants.dart';
+import 'dart:convert';
 import 'package:fixit/pages/listJasa.dart';
 import 'package:fixit/pages/profile.dart';
 import 'package:fixit/services/auth.dart';
@@ -10,15 +12,31 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:fixit/providers/userProvider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-// class HomeScreen extends ConsumerStatefulWidget {
-//   const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-class HomeScreen extends ConsumerWidget {
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<UserModel> _user;
+  Future<UserModel> getUser() async {
+    var storage = const FlutterSecureStorage();
+    var rawJsonData = await storage.read(key: userDataKey);
+
+    return UserModel.fromJson(jsonDecode(rawJsonData!));
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _user = getUser();
+  }
+
   goToProfilePage(context) {
     Nav.goTo(context, UserProfile());
   }
@@ -28,11 +46,8 @@ class HomeScreen extends ConsumerWidget {
   }
 
   TextEditingController searchCont = TextEditingController();
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // test(ref);
-    AsyncValue<UserModel> user = ref.watch(userProvider);
+  Widget build(BuildContext context) {
     return ScrollLayout(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: <
             Widget>[
@@ -45,17 +60,33 @@ class HomeScreen extends ConsumerWidget {
                     "https://ik.imagekit.io/ionicfirebaseapp/getflutter/tr:dpr-auto,tr:w-auto/2020/02/circular--1--1.png")),
           ),
           Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: user.when(
-                loading: () => const CircularProgressIndicator(),
-                error: (err, stack) => Text('Error: $err'),
-                data: (data) {
-                  return Text(
-                    "Hello, ${data.name}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  );
-                },
-              )),
+            padding: EdgeInsets.only(left: 20),
+            child: FutureBuilder<UserModel>(
+              future: _user,
+              builder: (
+                BuildContext context,
+                AsyncSnapshot snapshot,
+              ) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return const Text('Error');
+                  } else if (snapshot.hasData) {
+                    return Text(
+                      "Hello, ${snapshot.data.name}",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    );
+                  } else {
+                    return const Text('Empty data');
+                  }
+                } else {
+                  return Text('State: ${snapshot.connectionState}');
+                }
+              },
+            ),
+          ),
         ],
       ),
       Padding(
@@ -102,7 +133,7 @@ class HomeScreen extends ConsumerWidget {
               ]),
         ),
       ),
-       Padding(
+      Padding(
         padding: EdgeInsets.only(top: 20),
         child: Row(
           children: [
@@ -222,3 +253,12 @@ class _CategoryTileState extends State<CategoryTile> {
     );
   }
 }
+
+
+// class HomeScreen extends ConsumerStatefulWidget {
+//   const HomeScreen({Key? key}) : super(key: key);
+
+//   @override
+//   State<HomeScreen> createState() => _HomeScreenState();
+// }
+

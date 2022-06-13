@@ -1,6 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fixit/pages/OrderDetailPage.dart';
+import 'package:fixit/pages/home.dart';
+import 'package:fixit/pages/profile.dart';
+import 'package:fixit/pages/transactionPage.dart';
 import 'package:fixit/services/notificationApi.dart';
 import 'package:fixit/util/constants.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +59,10 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('app_icon');
+final InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -98,11 +107,43 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey(debugLabel: "Main Navigator");
+  void selectNotification(String? payload) async {
+    if (payload != null) {
+      debugPrint(
+          '--------------------------------------------notification payload: $payload');
+    }
+    var resp = jsonDecode("$payload");
+
+    if (resp["intended_for"] == "partner") {
+      print("[Notification] For Partner | transactionId ${resp['id']}");
+      this.navigatorKey.currentState?.push(
+            MaterialPageRoute(
+                builder: (context) => OrderDetailPage(
+                      transactionId: resp['id'],
+                    )),
+            //  (Route<dynamic> route) => false,
+          );
+    } else if (resp["intended_for"] == "customer") {
+      print("[Notification] For Customer | transactionId ${resp['id']}");
+      this.navigatorKey.currentState?.push(
+            MaterialPageRoute(
+                builder: (context) => TransactionPage(
+                      transactionId: resp['id'],
+                    )),
+            //  (Route<dynamic> route) => false,
+          );
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: selectNotification);
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
@@ -110,19 +151,16 @@ class _MyAppState extends State<MyApp> {
       // print("[Notification] ${message.data}");
       if (notification != null && android != null) {
         flutterLocalNotificationsPlugin.show(
+            payload: "${message.data['moredata']}",
             notification.hashCode,
-            notification.title,
+            "${notification.title}",
             notification.body,
             NotificationDetails(
                 android: AndroidNotificationDetails(channel.id, channel.name,
-
                     channelDescription: channel.description,
                     color: Colors.blue,
                     icon: '@mipmap/ic_launcher',
-                    playSound: true)
-                    )
-                    
-                    );
+                    playSound: true)));
       }
     });
 
@@ -131,12 +169,17 @@ class _MyAppState extends State<MyApp> {
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
         print("[on opened]I'm clicked");
-        showDialog(context: context, builder: (_){
-          return AlertDialog(
-            title: Text("${notification.title}"),
-            content: SingleChildScrollView(child: Column(children: [Text("${notification.body}")],)),
-          );
-        });
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text("${notification.title}"),
+                content: SingleChildScrollView(
+                    child: Column(
+                  children: [Text("${notification.body}")],
+                )),
+              );
+            });
       }
     });
   }
@@ -144,6 +187,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext contextP) {
     return MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           // ... app-specific localization delegate[s] here

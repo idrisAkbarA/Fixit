@@ -1,5 +1,5 @@
 class Endpoint {
-  static const baseUrl = "http://192.168.1.10:8000";
+  static const baseUrl = "http://192.168.1.20:8000";
   static const login = "$baseUrl/api/auth/login";
   static const register = "$baseUrl/api/auth/register";
   static const registerAsPartner = "$baseUrl/api/partner/create";

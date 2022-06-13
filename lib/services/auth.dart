@@ -59,6 +59,7 @@ class Auth {
     }
     final storage = new FlutterSecureStorage();
     await storage.delete(key: tokenKey);
+    await storage.delete(key: userDataKey);
     await storage.delete(key: partnerIdKey);
     print("[Auth]${await storage.read(key: tokenKey)}");
     return true;

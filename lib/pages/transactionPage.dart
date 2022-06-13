@@ -35,7 +35,10 @@ class _TransactionPageState extends State<TransactionPage> {
       return "Menunggu konfirmasi penyedia jasa.";
     }else if(data == "accepted"){
       return "Penyedia jasa telah mengkonfirmasi order anda. Silahkan tunggu penyedia jasa datang ke kediaman anda.\nTerimakasih.";
-    }else{
+    }else if(data == "finished"){
+      return "Transaksi telah selesai";
+    }
+    else{
       return "Maaf, penyedia jasa membatalkan order anda";
     }
   }
